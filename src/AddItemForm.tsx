@@ -1,4 +1,4 @@
-import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
+ import React, {ChangeEvent, KeyboardEvent, useState,useCallback} from 'react';
 import {Box, Button, FormControl, IconButton, TextField} from '@material-ui/core';
 import {AddBox} from '@material-ui/icons';
 
@@ -6,27 +6,29 @@ type AddItemFormPropsType = {
     addItem: (title: string) => void
 }
 
-export function AddItemForm(props: AddItemFormPropsType) {
-
+export const AddItemForm= React.memo((props: AddItemFormPropsType) =>{
+    console.log('addItemForm')
     let [title, setTitle] = useState("")
     let [error, setError] = useState<string | null>(null)
 
-    const addItem = () => {
+    const addItem = useCallback(() => {
         if (title.trim() !== "") {
             props.addItem(title);
             setTitle("");
         } else {
             setError("Title is required");
         }
-    }
+    },[title])
 
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setTitle(e.currentTarget.value)
     }
 
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        setError(null);
-        if (e.charCode === 13) {
+        if (error!==null){
+            setError(null);
+        }
+               if (e.charCode === 13) {
             addItem();
         }
     }
@@ -44,4 +46,4 @@ export function AddItemForm(props: AddItemFormPropsType) {
             <AddBox />
         </IconButton>
     </div>
-}
+})
